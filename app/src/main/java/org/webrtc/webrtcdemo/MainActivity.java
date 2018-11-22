@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -13,11 +15,21 @@ public class MainActivity extends Activity implements MediaEngineObserver{
     private MediaEngine mediaEngine = null;
 
     private LinearLayout llRemoteSurface;
-    private FrameLayout llLocalSurface;
+    private LinearLayout llLocalSurface;
     private TextView tvStats;
+
+    private final int aRxPortDefault = 11113;
+    private final int aTxPortDefault =11113;
+    private final int vRxPortDefault = 11111;
+    private final int vTxPortDefault = 11111;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setContentView(R.layout.activity_main);
         DisplayMetrics dm = getResources().getDisplayMetrics();
         int screenWidth = dm.widthPixels;
@@ -29,21 +41,32 @@ public class MainActivity extends Activity implements MediaEngineObserver{
         mediaEngine = new MediaEngine(this);
         mediaEngine.setRemoteIp("127.0.0.1");
         mediaEngine.setAudio(true);
+        mediaEngine.setAudioTxPort(aTxPortDefault);
+        mediaEngine.setAudioRxPort(aRxPortDefault);
         mediaEngine.setAudioCodec(0);
 
         mediaEngine.setSpeaker(true);
+        mediaEngine.setVideoRxPort(vRxPortDefault);
+        mediaEngine.setVideoTxPort(vTxPortDefault);
         mediaEngine.setSendVideo(true);
         mediaEngine.setReceiveVideo(true);
-
         mediaEngine.setVideoCodec(0);
+        mediaEngine.setResolutionIndex(4);
+
         mediaEngine.setObserver(this);
         mediaEngine.start();
-        llLocalSurface = (FrameLayout)findViewById(R.id.llLocalView);
+        llLocalSurface = (LinearLayout)findViewById(R.id.llLocalView);
         llLocalSurface.addView(mediaEngine.getLocalSurfaceView());
-        LinearLayout.LayoutParams params= (LinearLayout.LayoutParams) llLocalSurface.getLayoutParams();
+        FrameLayout.LayoutParams params= (FrameLayout.LayoutParams) llLocalSurface.getLayoutParams();
         params.height = screenHeight* 1/2;
         llLocalSurface.setLayoutParams(params);
 
+        llRemoteSurface = (LinearLayout)findViewById(R.id.llRemoteView);
+        LinearLayout.LayoutParams params1= (LinearLayout.LayoutParams) llRemoteSurface.getLayoutParams();
+        params1.height = screenHeight* 1/2;
+
+        llRemoteSurface.addView(mediaEngine.getRemoteSurfaceView());
+        llRemoteSurface.setLayoutParams(params1);
 
     }
 
@@ -53,7 +76,6 @@ public class MainActivity extends Activity implements MediaEngineObserver{
             @Override
             public void run() {
                 tvStats.setText(stats);
-                Log.i("MediaObserver", "stats: "+stats);
             }
         });
     }

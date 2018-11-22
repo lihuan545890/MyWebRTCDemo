@@ -333,6 +333,7 @@ class MediaCodecVideoDecoder {
     codec.releaseOutputBuffer(index, render);
     availableOutputBufferIndices.removeFirst();
     availableOutputBufferInfos.removeFirst();
+
     return true;
   }
 }
