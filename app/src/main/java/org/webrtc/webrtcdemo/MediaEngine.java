@@ -528,6 +528,7 @@ public class MediaEngine implements VideoDecodeEncodeObserver {
 
   private void updateVideoCodec() {
     VideoCodecInst codec = getVideoCodec(videoCodecIndex, resolutionIndex);
+    Log.d("updateVideoCodec", "codec name: "+codec.toString());
     check(vie.setSendCodec(videoChannel, codec) == 0, "Failed setSendCodec");
     codec.dispose();
   }
