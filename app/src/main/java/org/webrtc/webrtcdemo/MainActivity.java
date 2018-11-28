@@ -40,10 +40,11 @@ public class MainActivity extends Activity implements MediaEngineObserver{
 
         mediaEngine = new MediaEngine(this);
         mediaEngine.setRemoteIp("127.0.0.1");
-//        mediaEngine.setAudio(true);
-//        mediaEngine.setAudioTxPort(aTxPortDefault);
-//        mediaEngine.setAudioRxPort(aRxPortDefault);
+        mediaEngine.setAudio(true);
+        mediaEngine.setAudioTxPort(aTxPortDefault);
+        mediaEngine.setAudioRxPort(aRxPortDefault);
         mediaEngine.setAudioCodec(0);
+        mediaEngine.setAgc(true);
 
         mediaEngine.setSpeaker(true);
         mediaEngine.setVideoRxPort(vRxPortDefault);
