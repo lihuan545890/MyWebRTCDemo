@@ -1,37 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:orientation="vertical">
+    >
+
+        <FrameLayout
+            android:id="@+id/llLocalView"
+            android:layout_width="160dp"
+            android:layout_height="90dp"
+            android:layout_gravity="right|bottom" >
+
+        </FrameLayout>
+
 
     <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <LinearLayout
-            android:id="@+id/llLocalView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-        </LinearLayout>
-
-        <TextView
-            android:id="@+id/tvStats"
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:textSize="12sp"
-            android:textColor="@android:color/white" />
-    </FrameLayout>
-
-
-
-
-
-    <LinearLayout
         android:id="@+id/llRemoteView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+         >
 
+    </FrameLayout>
 
-    </LinearLayout>
+    <TextView
+        android:id="@+id/tvStats"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:textSize="12sp"
+        android:textColor="@android:color/white" />
 
-</LinearLayout>
+</FrameLayout>

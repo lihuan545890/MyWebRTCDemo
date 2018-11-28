@@ -151,7 +151,8 @@ public class MediaEngine implements VideoDecodeEncodeObserver {
   private int inHeight;
 
   private OrientationEventListener orientationListener;
-  private int deviceOrientation = OrientationEventListener.ORIENTATION_UNKNOWN;
+//  private int deviceOrientation = OrientationEventListener.ORIENTATION_UNKNOWN;
+  private int deviceOrientation = 2;
 
   public MediaEngine(Context context) {
     this.context = context;
@@ -412,15 +413,20 @@ public class MediaEngine implements VideoDecodeEncodeObserver {
     String debugDirectory = getDebugDirectory();
     check(voe.startDebugRecording(debugDirectory +  String.format("/apm_%d.dat",
                 System.currentTimeMillis())) == 0,
-        "Failed starting debug");
+        "Failed starting debug"); //WEBRTC_AUDIOPROC_DEBUG_DUMP未定义
   }
 
   public void setIncomingVoeRtpDump(boolean enable) {
     audioRtpDump = enable;
+
     if (!enable) {
       check(voe.stopRtpDump(videoChannel,
               VoiceEngine.RtpDirections.INCOMING) == 0,
           "voe stopping rtp dump");
+      return;
+    }
+    if (!createDebugDirectory()) {
+      check(false, "Unable to create debug directory.");
       return;
     }
     String debugDirectory = getDebugDirectory();
@@ -462,8 +468,6 @@ public class MediaEngine implements VideoDecodeEncodeObserver {
         }else {
           svRemote = ViERenderer.CreateRenderer(context, true);
         }
-
-
 
       if (externalCodec != null) {
         check(vie.registerExternalReceiveCodec(videoChannel,
@@ -725,6 +729,10 @@ public class MediaEngine implements VideoDecodeEncodeObserver {
       check(vie.stopRtpDump(videoChannel,
               VideoEngine.RtpDirections.INCOMING) == 0,
           "vie StopRTPDump");
+      return;
+    }
+    if (!createDebugDirectory()) {
+      check(false, "Unable to create debug directory.");
       return;
     }
     String debugDirectory = getDebugDirectory();

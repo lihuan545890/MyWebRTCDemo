@@ -1,6 +1,7 @@
 package org.webrtc.webrtcdemo;
 
 import android.app.Activity;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -14,8 +15,8 @@ public class MainActivity extends Activity implements MediaEngineObserver{
     private NativeWebRtcContextRegistry contextRegistry = null;
     private MediaEngine mediaEngine = null;
 
-    private LinearLayout llRemoteSurface;
-    private LinearLayout llLocalSurface;
+    private FrameLayout llRemoteSurface;
+    private FrameLayout llLocalSurface;
     private TextView tvStats;
 
     private final int aRxPortDefault = 11113;
@@ -26,24 +27,22 @@ public class MainActivity extends Activity implements MediaEngineObserver{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setContentView(R.layout.activity_main);
-        DisplayMetrics dm = getResources().getDisplayMetrics();
-        int screenWidth = dm.widthPixels;
-        int screenHeight = dm.heightPixels;
+
         tvStats = (TextView)findViewById(R.id.tvStats);
+
         contextRegistry = new NativeWebRtcContextRegistry();
         contextRegistry.register(this);
 
         mediaEngine = new MediaEngine(this);
         mediaEngine.setRemoteIp("127.0.0.1");
-        mediaEngine.setAudio(true);
-        mediaEngine.setAudioTxPort(aTxPortDefault);
-        mediaEngine.setAudioRxPort(aRxPortDefault);
+//        mediaEngine.setAudio(true);
+//        mediaEngine.setAudioTxPort(aTxPortDefault);
+//        mediaEngine.setAudioRxPort(aRxPortDefault);
         mediaEngine.setAudioCodec(0);
 
         mediaEngine.setSpeaker(true);
@@ -55,19 +54,15 @@ public class MainActivity extends Activity implements MediaEngineObserver{
         mediaEngine.setResolutionIndex(4);
         mediaEngine.videoCodecsAsString();
         mediaEngine.setObserver(this);
+        mediaEngine.setTrace(false);
+
+//        mediaEngine.setIncomingVieRtpDump(false);
         mediaEngine.start();
-        llLocalSurface = (LinearLayout)findViewById(R.id.llLocalView);
+        llLocalSurface = (FrameLayout)findViewById(R.id.llLocalView);
         llLocalSurface.addView(mediaEngine.getLocalSurfaceView());
-        FrameLayout.LayoutParams params= (FrameLayout.LayoutParams) llLocalSurface.getLayoutParams();
-        params.height = screenHeight* 1/2;
-        llLocalSurface.setLayoutParams(params);
 
-        llRemoteSurface = (LinearLayout)findViewById(R.id.llRemoteView);
-        LinearLayout.LayoutParams params1= (LinearLayout.LayoutParams) llRemoteSurface.getLayoutParams();
-        params1.height = screenHeight* 1/2;
-
+        llRemoteSurface = (FrameLayout)findViewById(R.id.llRemoteView);
         llRemoteSurface.addView(mediaEngine.getRemoteSurfaceView());
-        llRemoteSurface.setLayoutParams(params1);
 
     }
 
@@ -76,11 +71,17 @@ public class MainActivity extends Activity implements MediaEngineObserver{
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
+//                Log.i("WebRTCDemo", "stats: "+stats);
                 tvStats.setText(stats);
             }
         });
     }
 
-
+    @Override
+    public void onDestroy() {
+        mediaEngine.dispose();
+        contextRegistry.unRegister();
+        super.onDestroy();
+    }
 
 }
