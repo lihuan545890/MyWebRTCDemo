@@ -23,12 +23,6 @@ public class MainActivity extends Activity implements MediaEngineObserver{
     private final int vRxPortDefault = 11111;
     private final int vTxPortDefault = 11111;
 
-    private enum CodecType{
-        VP8,
-        VP9,
-        H264,
-        I420,
-    };
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,7 +51,7 @@ public class MainActivity extends Activity implements MediaEngineObserver{
         mediaEngine.setVideoTxPort(vTxPortDefault);
         mediaEngine.setSendVideo(true);
         mediaEngine.setReceiveVideo(true);
-        mediaEngine.setVideoCodec(CodecType.H264.ordinal());
+        mediaEngine.setVideoCodec(VideoCodecInst.CodecType.H264.ordinal());
         mediaEngine.setResolutionIndex(4);
         mediaEngine.videoCodecsAsString();
         mediaEngine.setObserver(this);

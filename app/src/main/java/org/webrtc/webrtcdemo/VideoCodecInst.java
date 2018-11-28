@@ -12,7 +12,12 @@ package org.webrtc.webrtcdemo;
 
 public class VideoCodecInst {
   private final long nativeCodecInst;
-
+  public enum CodecType{
+    VP8,
+    VP9,
+    H264,
+    I420,
+  };
   // VideoCodecInst can only be created from the native layer.
   private VideoCodecInst(long nativeCodecInst) {
     this.nativeCodecInst = nativeCodecInst;

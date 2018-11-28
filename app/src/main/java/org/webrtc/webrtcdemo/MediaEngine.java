@@ -451,8 +451,20 @@ public class MediaEngine implements VideoDecodeEncodeObserver {
 //        externalCodec = new MediaCodecVideoDecoder(context);
 //        svRemote = externalCodec.getView();
 //      }
-        externalCodec = new MediaCodecVideoDecoder(context);
-        svRemote = externalCodec.getView();
+
+
+//        externalCodec = new MediaCodecVideoDecoder(context);
+//        svRemote = externalCodec.getView();
+
+        if(videoCodecIndex == VideoCodecInst.CodecType.VP8.ordinal()){
+          externalCodec = new MediaCodecVideoDecoder(context);
+          svRemote = externalCodec.getView();
+        }else {
+          svRemote = ViERenderer.CreateRenderer(context, true);
+        }
+
+
+
       if (externalCodec != null) {
         check(vie.registerExternalReceiveCodec(videoChannel,
                 VCM_VP8_PAYLOAD_TYPE, externalCodec, true) == 0,
